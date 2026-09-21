@@ -40,7 +40,8 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
        implementation 'com.sign3.simbinding:intelligence-playstore:1.0.0'
    }
    ```
-   - Checkout the [latest version](#changelog)
+   - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
+   - Sign3 SIM Binding: checkout the [latest version](#changelog)
 
 3. **After adding the dependency, sync your project with Gradle files to ensure the library is properly integrated.**
 
