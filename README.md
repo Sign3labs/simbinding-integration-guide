@@ -18,8 +18,6 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
              google()
              mavenCentral()
              maven { url 'https://jitpack.io' }
-
-             // JFrog repository to pull Sign3 SDK artifacts
              maven {
                  url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
                  credentials {
@@ -43,8 +41,6 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
    }
    ```
    - Checkout the [latest version](#changelog)
-   - The SDK brings its own dependencies. Nothing else is needed for SIM binding or SMS OTP.
-   - The SDK requires a minimum SDK version of 23. If your app targets below this version, enclose the calls within conditional checks.
 
 3. **After adding the dependency, sync your project with Gradle files to ensure the library is properly integrated.**
 
@@ -67,34 +63,39 @@ Once you have successfully integrated the Sign3 SIM Binding SDK in your applicat
 
 ```xml
 <application
-    android:networkSecurityConfig="@xml/sign3_network_security_config"
-    ... >
+        android:networkSecurityConfig="@xml/sign3_network_security_config"
+        ... >
 ```
 
 <br>
 
 ## Initializing the SDK
 
-SIM binding has no initialisation of its own. Initialise the Sign3 Intelligence SDK in the `onCreate()` of your Application class, exactly as in the [Sign3 SDK integration guide](https://github.com/Sign3labs/sdk-integration-guide-lite), using the ClientID and Client Secret from the credentials document.
+1. Initialize the SDK in the `onCreate()` method of your Application class.
+2. Use the ClientID and Client Secret shared with the credentials document.
+3. The SDK require a minimum SDK version of 23 if your app is targeting below this version must enclose Sign3 API calls within conditional checks.
 
 ### For Kotlin
 
 ```kotlin
 override fun onCreate() {
-    super.onCreate()
+   super.onCreate()
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        val options = Options.Builder()
-            .setClientId("<SIGN3_CLIENT_ID>")
-            .setClientSecret("<SIGN3_CLIENT_SECRET>")
-            .setSSLPinning(true) // Optional, default false
-            .setEnvironment(if (BuildConfig.DEBUG) Options.ENV_DEV else Options.ENV_PROD)
-            .build()
+   // Other initialisation code
+   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      val options = Options.Builder()
+         .setClientId("<SIGN3_CLIENT_ID>")
+         .setClientSecret("<SIGN3_CLIENT_SECRET>")
+         .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
+         .setEnvironment(if (BuildConfig.DEBUG) Options.ENV_DEV else Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
+         .build()
 
-        Sign3Intelligence.getInstance(this).initAsync(options) {
-            Log.i("TAG_AppInstance", "Sign3Intelligence init : $it")
-        }
-    }
+      Sign3Intelligence.getInstance(this).initAsync(options) {
+         // to check if the SDK is initialized correctly or not
+         Log.i("TAG_AppInstance", "Sign3Intelligence init : $it")
+      }
+   }
+
 }
 ```
 
@@ -103,18 +104,19 @@ override fun onCreate() {
 ```java
 @Override
 public void onCreate() {
-    super.onCreate();
+   super.onCreate();
 
-    Options options = new Options.Builder()
-            .setClientId("<SIGN3_CLIENT_ID>")
-            .setClientSecret("<SIGN3_CLIENT_SECRET>")
-            .setSSLPinning(true) // Optional, default false
-            .setEnvironment(BuildConfig.DEBUG ? Options.ENV_DEV : Options.ENV_PROD)
-            .build();
+   // Other initialisation code
+   Options options = new Options.Builder()
+           .setClientId("<SIGN3_CLIENT_ID>")
+           .setClientSecret("<SIGN3_CLIENT_SECRET>")
+           .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
+           .setEnvironment(BuildConfig.DEBUG ? Options.ENV_DEV : Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
+           .build();
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        Sign3Intelligence.getInstance(this).initAsync(options);
-    }
+   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      Sign3Intelligence.getInstance(this).initAsync(options);
+   }
 }
 ```
 <br>
@@ -135,26 +137,26 @@ Options are reset after every score, so update them again before each login or s
 
 ```kotlin
 val updateOptions = UpdateOptions.Builder()
-    .setPhoneNumber("919876543210")        // country code + number, digits only
-    .setUserEventType(UserEventType.LOGIN) // LOGIN or SIGNUP
-    .build()
+   .setPhoneNumber("919876543210")        // country code + number, digits only
+   .setUserEventType(UserEventType.LOGIN) // LOGIN or SIGNUP
+   .build()
 
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
 
 Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListener {
-    override fun onSuccess(response: IntelligenceResponse) {
-        val snaRequestId = response.snaRequestID
-        if (snaRequestId.isNullOrEmpty()) {
-            // SIM binding did not start for this score
-        } else {
-            // SIM binding is running. Send this id to your backend for the status check.
-            Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
-        }
-    }
+   override fun onSuccess(response: IntelligenceResponse) {
+      val snaRequestId = response.snaRequestID
+      if (snaRequestId.isNullOrEmpty()) {
+         // SIM binding did not start for this score
+      } else {
+         // SIM binding is running. Send this id to your backend for the status check.
+         Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
+      }
+   }
 
-    override fun onError(error: IntelligenceError) {
-        // Something went wrong, handle the error message
-    }
+   override fun onError(error: IntelligenceError) {
+      // Something went wrong, handle the error message
+   }
 })
 ```
 
@@ -169,12 +171,21 @@ UpdateOptions updateOptions = new UpdateOptions.Builder()
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
 
 Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
-    @Override public void onSuccess(IntelligenceResponse response) {
-        String snaRequestId = response.getSnaRequestID();
-        Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
-    }
+   @Override
+   public void onSuccess(IntelligenceResponse response) {
+      String snaRequestId = response.getSnaRequestID();
+      if (snaRequestId == null || snaRequestId.isEmpty()) {
+         // SIM binding did not start for this score
+      } else {
+         // SIM binding is running. Send this id to your backend for the status check.
+         Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
+      }
+   }
 
-    @Override public void onError(IntelligenceError error) { }
+   @Override
+   public void onError(IntelligenceError error) {
+      // Something went wrong, handle the error message
+   }
 });
 ```
 <br>
@@ -188,21 +199,26 @@ The score returns as soon as the transaction is open; the binding itself finishe
 ### Request
 
 ```bash
-curl --location 'https://intelligence-staging.sign3.in/auth/v1/status?requestId=ARID_411A767110E0422FA06F9CF14F2B8E34' \
+curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411A767110E0422FA06F9CF14F2B8E34' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Basic <base64(tenantId:tenantSecret)>'
 ```
 
 | | |
 |---|---|
+| Base URL | `https://intelligence.sign3.in` |
 | Method | `GET` |
 | Path | `/auth/v1/status` |
 | Query | `requestId` — the `snaRequestID` from `IntelligenceResponse` |
 | `Authorization` | `Basic` over `<tenantId>:<tenantSecret>`, both provided by Sign3 |
 
-`auths[].status` is what you act on; it is `PENDING` until the carrier answers, so poll until it settles or you time out.
+### Response
 
-### `200` — the transaction is known
+<details open>
+<summary><b>&nbsp;<code>200</code> &nbsp;·&nbsp; The transaction is known</b></summary>
+
+<details>
+<summary>🟡 &nbsp;<b><code>PENDING</code></b> &nbsp;— the carrier has not answered yet</summary>
 
 ```json
 {
@@ -211,7 +227,9 @@ curl --location 'https://intelligence-staging.sign3.in/auth/v1/status?requestId=
       "identityType": "MOBILE",
       "identityValue": "917069914791",
       "channel": "SILENT_AUTH",
-      "methods": ["SILENT_AUTH"],
+      "methods": [
+        "SILENT_AUTH"
+      ],
       "status": "PENDING",
       "type": "PRIMARY"
     }
@@ -223,7 +241,9 @@ curl --location 'https://intelligence-staging.sign3.in/auth/v1/status?requestId=
     "type": "MOBILE",
     "homeOperator": "VI",
     "location": "India",
-    "timeZones": ["Asia/Calcutta"]
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
   },
   "simDetail": {
     "operator": "AIRTEL",
@@ -234,43 +254,115 @@ curl --location 'https://intelligence-staging.sign3.in/auth/v1/status?requestId=
     "ip": "2401:4900:1c50:1a3b::1",
     "ipType": "IPV6",
     "operator": "AIRTEL"
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>✅ &nbsp;<b><code>SUCCESS</code></b> &nbsp;— the SIM is bound</summary>
+
+```json
+{
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "SUCCESS",
+      "verifiedTimestamp": 1781091069000,
+      "type": "PRIMARY"
+    }
+  ],
+  "derivedOperator": "AIRTEL",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
   },
-  "deviceFingerprinting": {
-    "status": "SUCCESS",
-    "sessionId": "a98ead44-f4db-4801-8c3f-041f98140734",
-    "deviceId": "781b21f7-220b-4f44-9155-6261f8564924",
-    "newDevice": false,
-    "riskAssessment": {
-      "sessionRiskLevel": "HIGH",
-      "deviceRiskLevel": "HIGH",
-      "sessionRiskScore": 95,
-      "deviceRiskScore": 90,
-      "ipFraudScore": 0,
-      "flags": {
-        "isVpn": false,
-        "isEmulator": false,
-        "isAppTampered": true
-      }
-    },
-    "deviceContext": {
-      "brand": "iQOO",
-      "model": "I2410",
-      "os": "Android",
-      "osVersion": "16"
-    },
-    "networkContext": {
-      "ipAddress": "106.205.222.198",
-      "ipType": "v4",
-      "asn": "45609",
-      "isp": "Bharti Airtel Limited"
+  "simDetail": {
+    "operator": "AIRTEL",
+    "mcc": 405,
+    "mnc": 51
+  },
+  "networkDetail": {
+    "ip": "2401:4900:1c50:1a3b::1",
+    "ipType": "IPV6",
+    "operator": "AIRTEL",
+    "callback": {
+      "ip": "2401:4900:aabb:f09e::68fa:fe37",
+      "operator": "AIRTEL",
+      "userAgent": "Chrome/147.0.0.0 Mobile Safari/537.36"
     }
   }
 }
 ```
 
-A mismatch between `derivedOperator` (the SIM that actually answered) and `phoneDetail.homeOperator` is normal on a ported number.
+</details>
 
-### `400` — asked too early
+<details>
+<summary>❌ &nbsp;<b><code>FAILED</code></b> &nbsp;— the SIM could not be bound</summary>
+
+```json
+{
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "FAILED",
+      "type": "PRIMARY",
+      "error": {
+        "errorCode": "SP40005",
+        "message": "Operator not supported",
+        "description": "This operator is not supported for verification. Please try with a different network."
+      }
+    }
+  ],
+  "derivedOperator": "JIO",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
+  },
+  "simDetail": {
+    "operator": "JIO",
+    "mcc": 405,
+    "mnc": 872
+  },
+  "networkDetail": {
+    "ip": "49.204.148.177",
+    "ipType": "IPV4"
+  }
+}
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><b>&nbsp;<code>400</code> &nbsp;·&nbsp; The request was not accepted</b></summary>
+
+<details>
+<summary>⚠️ &nbsp;<b><code>7170</code></b> &nbsp;— Auth not started yet</summary>
 
 ```json
 {
@@ -280,9 +372,28 @@ A mismatch between `derivedOperator` (the SIM that actually answered) and `phone
 }
 ```
 
-The transaction has not opened yet. Retry after a moment; if it never opens, SIM binding did not start for that score.
+</details>
 
-### `401` — credentials rejected
+<details>
+<summary>⚠️ &nbsp;<b><code>7119</code></b> &nbsp;— Invalid request Id</summary>
+
+```json
+{
+  "message": "Invalid Request",
+  "errorCode": "7119",
+  "description": "Request error: Invalid request Id"
+}
+```
+
+</details>
+
+</details>
+
+<details>
+<summary><b>&nbsp;<code>401</code> &nbsp;·&nbsp; The caller was not authorised</b></summary>
+
+<details>
+<summary>🔒 &nbsp;<b><code>7012</code></b> &nbsp;— Merchant credentials are empty</summary>
 
 ```json
 {
@@ -292,13 +403,41 @@ The transaction has not opened yet. Retry after a moment; if it never opens, SIM
 }
 ```
 
-The `Authorization` header is missing, malformed, or carries the wrong tenant id / secret.
+</details>
+
+<details>
+<summary>🔒 &nbsp;<b><code>7002</code></b> &nbsp;— Invalid credentials</summary>
+
+```json
+{
+  "message": "Access blocked",
+  "errorCode": "7002",
+  "description": "Authorization error: Invalid credentials"
+}
+```
+
+</details>
+
+<details>
+<summary>🔒 &nbsp;<b><code>7019</code></b> &nbsp;— Merchant blocked</summary>
+
+```json
+{
+  "message": "Merchant Blocked",
+  "errorCode": "7019",
+  "description": "Your account has been temporarily Blocked. Please contact support for assistance."
+}
+```
+
+</details>
+
+</details>
 
 <br>
 
 ## Changelog
 ### 1.0.0
- - Silent Network Authentication over the carrier network, with automatic fallback to SMS OTP and automatic OTP verification.
- - Driven entirely by the Sign3 Intelligence SDK on login and signup scores; no API to call.
- - `IntelligenceResponse.snaRequestID` carries the transaction id for the `/auth/v1/status` check.
- - Ships its network security config and consumer ProGuard rules.
+- Silent Network Authentication over the carrier network, with automatic fallback to SMS OTP and automatic OTP verification.
+- Driven entirely by the Sign3 Intelligence SDK on login and signup scores; no API to call.
+- `IntelligenceResponse.snaRequestID` carries the transaction id for the `/auth/v1/status` check.
+- Ships its network security config and consumer ProGuard rules.
