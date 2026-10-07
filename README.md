@@ -11,6 +11,8 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
 1. **Configure the Repository in `settings.gradle`**
    - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
 
+     **Groovy (`settings.gradle`)**
+
      ```groovy
      dependencyResolutionManagement {
          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -20,6 +22,26 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
              maven { url 'https://jitpack.io' }
              maven {
                  url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
+                 credentials {
+                     username = "provided in credential doc"
+                     password = "provided in credential doc"
+                 }
+             }
+         }
+     }
+     ```
+
+     **Kotlin DSL (`settings.gradle.kts`)**
+
+     ```kotlin
+     dependencyResolutionManagement {
+         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+         repositories {
+             google()
+             mavenCentral()
+             maven { url = uri("https://jitpack.io") }
+             maven {
+                 url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
                  credentials {
                      username = "provided in credential doc"
                      password = "provided in credential doc"
@@ -66,6 +88,18 @@ Once you have successfully integrated the Sign3 SIM Binding SDK in your applicat
 <application
         android:networkSecurityConfig="@xml/sign3_network_security_config"
         ... >
+```
+
+If your app already has its own `networkSecurityConfig`, do not replace it. Instead, add the following inside your existing `<network-security-config>`:
+
+```xml
+<domain-config cleartextTrafficPermitted="true">
+   <domain includeSubdomains="true">80.in.safr.sekuramobile.com</domain>
+   <domain includeSubdomains="true">partnerapi.jio.com</domain>
+   <domain includeSubdomains="true">in-vil.ipification.com</domain>
+   <domain includeSubdomains="true">api-csp.airtel.in</domain>
+   <domain includeSubdomains="true">v4-api-csp.airtel.in</domain>
+</domain-config>
 ```
 
 <br>
@@ -215,54 +249,16 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ### Response
 
-<details open>
-<summary><b>&nbsp;<code>200</code> &nbsp;·&nbsp; The transaction is known</b></summary>
+#### Status code `200` — The transaction is known
 
-<details>
-<summary>🟡 &nbsp;<b><code>PENDING</code></b> &nbsp;— the carrier has not answered yet</summary>
-
-```json
-{
-  "auths": [
-    {
-      "identityType": "MOBILE",
-      "identityValue": "917069914791",
-      "channel": "SILENT_AUTH",
-      "methods": [
-        "SILENT_AUTH"
-      ],
-      "status": "PENDING",
-      "type": "PRIMARY"
-    }
-  ],
-  "derivedOperator": "AIRTEL",
-  "phoneDetail": {
-    "countryCode": "91",
-    "country": "IN",
-    "type": "MOBILE",
-    "homeOperator": "VI",
-    "location": "India",
-    "timeZones": [
-      "Asia/Calcutta"
-    ]
-  },
-  "simDetail": {
-    "operator": "AIRTEL",
-    "mcc": 405,
-    "mnc": 51
-  },
-  "networkDetail": {
-    "ip": "2401:4900:1c50:1a3b::1",
-    "ipType": "IPV6",
-    "operator": "AIRTEL"
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>✅ &nbsp;<b><code>SUCCESS</code></b> &nbsp;— the SIM is bound</summary>
+<table>
+<tr>
+<th align="left" width="330">✅ SUCCESS</th>
+<th align="left" width="330">🟡 PENDING</th>
+<th align="left" width="330">❌ FAILED</th>
+</tr>
+<tr>
+<td valign="top" width="330">
 
 ```json
 {
@@ -308,10 +304,55 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
+</td>
+<td valign="top" width="330">
 
-<details>
-<summary>❌ &nbsp;<b><code>FAILED</code></b> &nbsp;— the SIM could not be bound</summary>
+```json
+{
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "PENDING",
+      "type": "PRIMARY"
+    }
+  ],
+  "derivedOperator": "AIRTEL",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
+  },
+  "simDetail": {
+    "operator": "AIRTEL",
+    "mcc": 405,
+    "mnc": 51
+  },
+  "networkDetail": {
+    "ip": "2401:4900:1c50:1a3b::1",
+    "ipType": "IPV6",
+    "operator": "AIRTEL"
+  }
+}
+
+
+
+
+
+
+```
+
+</td>
+<td valign="top" width="330">
 
 ```json
 {
@@ -328,7 +369,7 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
       "error": {
         "errorCode": "SP40005",
         "message": "Operator not supported",
-        "description": "This operator is not supported for verification. Please try with a different network."
+        "description": "This operator isn’t supported. Please try a different network."
       }
     }
   ],
@@ -353,17 +394,23 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
     "ipType": "IPV4"
   }
 }
+
+
 ```
 
-</details>
+</td>
+</tr>
+</table>
 
-</details>
+#### Status code `400` — The request was not accepted
 
-<details>
-<summary><b>&nbsp;<code>400</code> &nbsp;·&nbsp; The request was not accepted</b></summary>
-
-<details>
-<summary>⚠️ &nbsp;<b><code>7170</code></b> &nbsp;— Auth not started yet</summary>
+<table>
+<tr>
+<th align="left" width="495">⚠️ 7170 · Auth not started yet</th>
+<th align="left" width="495">⚠️ 7119 · Invalid request Id</th>
+</tr>
+<tr>
+<td valign="top" width="495">
 
 ```json
 {
@@ -373,10 +420,8 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
-
-<details>
-<summary>⚠️ &nbsp;<b><code>7119</code></b> &nbsp;— Invalid request Id</summary>
+</td>
+<td valign="top" width="495">
 
 ```json
 {
@@ -386,15 +431,20 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
+</td>
+</tr>
+</table>
 
-</details>
+#### Status code `401` — The caller was not authorised
 
-<details>
-<summary><b>&nbsp;<code>401</code> &nbsp;·&nbsp; The caller was not authorised</b></summary>
-
-<details>
-<summary>🔒 &nbsp;<b><code>7012</code></b> &nbsp;— Merchant credentials are empty</summary>
+<table>
+<tr>
+<th align="left" width="330">🔒 7012 · Credentials empty</th>
+<th align="left" width="330">🔒 7002 · Invalid credentials</th>
+<th align="left" width="330">🔒 7019 · Merchant blocked</th>
+</tr>
+<tr>
+<td valign="top" width="330">
 
 ```json
 {
@@ -404,10 +454,8 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
-
-<details>
-<summary>🔒 &nbsp;<b><code>7002</code></b> &nbsp;— Invalid credentials</summary>
+</td>
+<td valign="top" width="330">
 
 ```json
 {
@@ -417,10 +465,8 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
-
-<details>
-<summary>🔒 &nbsp;<b><code>7019</code></b> &nbsp;— Merchant blocked</summary>
+</td>
+<td valign="top" width="330">
 
 ```json
 {
@@ -430,9 +476,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 }
 ```
 
-</details>
-
-</details>
+</td>
+</tr>
+</table>
 
 <br>
 
