@@ -164,7 +164,7 @@ Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, yo
 1. Based on your requirements, we will create a template ID for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
 2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding is not triggered for TRANSACTION or OTHERS.
 3. Call `getIntelligence()`.
-4. Once you receive the `snaRequestID`, call the Status Check API along with your Login API. The Status Check API should be called backend-to-backend for fraud prevention.
+4. Once you receive the `snaRequestID`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
 
 
 NOTE: Options are reset after every score, so update them again before each login or signup.
@@ -173,8 +173,8 @@ NOTE: Options are reset after every score, so update them again before each logi
 
 ```kotlin
 val updateOptions = UpdateOptions.Builder()
-   .setPhoneNumber("919876543210")        // country code + number, digits only
-   .setUserEventType(UserEventType.AUTH) // You have to set User event type AUTH to initiate Simbinding
+   .setPhoneNumber("919876543210")        // Pass the phone number with the country code
+   .setUserEventType(UserEventType.AUTH) // Set UserEventType.AUTH to initiate SIM binding
    .build()
 
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
