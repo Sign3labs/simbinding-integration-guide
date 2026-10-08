@@ -161,7 +161,7 @@ public void onCreate() {
 
 Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, you do not need to call the SIM binding SDK separately. The Sign3 Intelligence SDK internally handles the SNA and SMS flow.
 
-1. Based on your requirements, we will create a template ID for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
+1. Based on your requirements, we will create a `templateID` for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
 2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding is not triggered for TRANSACTION or OTHERS.
 3. Call `getIntelligence()`.
 4. Once you receive the `snaRequestID`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
