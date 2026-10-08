@@ -78,7 +78,6 @@ Add the following permissions to your app's `AndroidManifest.xml`. The SDK itsel
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.READ_SMS"/>
 ```
 
 ### Network security config
