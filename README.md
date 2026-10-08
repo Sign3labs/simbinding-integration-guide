@@ -9,47 +9,47 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
 ## Adding the SIM Binding SDK to Your Project
 
 1. **Configure the Repository in `settings.gradle`**
-   - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
+    - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
 
-     **Groovy (`settings.gradle`)**
+      **Groovy (`settings.gradle`)**
 
-     ```groovy
-     dependencyResolutionManagement {
-         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-         repositories {
-             google()
-             mavenCentral()
-             maven { url 'https://jitpack.io' }
-             maven {
-                 url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
-                 credentials {
-                     username = "provided in credential doc"
-                     password = "provided in credential doc"
-                 }
-             }
-         }
-     }
-     ```
+      ```groovy
+      dependencyResolutionManagement {
+          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+          repositories {
+              google()
+              mavenCentral()
+              maven { url 'https://jitpack.io' }
+              maven {
+                  url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
+                  credentials {
+                      username = "provided in credential doc"
+                      password = "provided in credential doc"
+                  }
+              }
+          }
+      }
+      ```
 
-     **Kotlin DSL (`settings.gradle.kts`)**
+      **Kotlin DSL (`settings.gradle.kts`)**
 
-     ```kotlin
-     dependencyResolutionManagement {
-         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-         repositories {
-             google()
-             mavenCentral()
-             maven { url = uri("https://jitpack.io") }
-             maven {
-                 url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
-                 credentials {
-                     username = "provided in credential doc"
-                     password = "provided in credential doc"
-                 }
-             }
-         }
-     }
-     ```
+      ```kotlin
+      dependencyResolutionManagement {
+          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+          repositories {
+              google()
+              mavenCentral()
+              maven { url = uri("https://jitpack.io") }
+              maven {
+                  url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
+                  credentials {
+                      username = "provided in credential doc"
+                      password = "provided in credential doc"
+                  }
+              }
+          }
+      }
+      ```
 
 2. **Add the SIM Binding SDK Dependency in App-Level Gradle**
 
@@ -62,8 +62,8 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
        implementation 'com.sign3.simbinding:intelligence-playstore:1.x.x'
    }
    ```
-   - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
-   - Sign3 SIM Binding: checkout the [latest version](#changelog)
+    - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
+    - Sign3 SIM Binding: checkout the [latest version](#changelog)
 
 3. **After adding the dependency, sync your project with Gradle files to ensure the library is properly integrated.**
 
@@ -162,12 +162,12 @@ public void onCreate() {
 Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, you do not need to call the SIM binding SDK separately. The Sign3 Intelligence SDK internally handles the SNA and SMS flow.
 
 1. Based on your requirements, we will create a `templateID` for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
-2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding is not triggered for TRANSACTION or OTHERS.
+2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding runs only for the AUTH event type; it is not triggered for LOGIN, SIGNUP, TRANSACTION or OTHERS.
 3. Call `getIntelligence()`.
-4. Once you receive the `snaRequestID`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
+4. The response carries a `simBindingResult` object. On success it holds the `snaRequestId`; on failure it holds `errorCode`, `errorMessage` and `errorDescription` instead. Once you receive the `snaRequestId`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
 
 
-NOTE: Options are reset after every score, so update them again before each login or signup.
+NOTE: Options are reset after every score, so update them again before each AUTH score.
 
 ### For Kotlin
 
@@ -181,9 +181,13 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
 
 Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListener {
    override fun onSuccess(response: IntelligenceResponse) {
-      val snaRequestId = response.snaRequestID
-      if (snaRequestId.isNullOrEmpty()) {
+      val simBindingResult = response.simBindingResult
+      val snaRequestId = simBindingResult?.snaRequestId
+      if (simBindingResult == null) {
          // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
+      } else if (snaRequestId.isNullOrEmpty()) {
+         // SIM binding could not be started. Check errorCode, errorMessage and errorDescription, and handle the Intelligence Response as required.
+         Log.e("Sign3SimBinding", "SIM binding failed: ${simBindingResult.errorCode} ${simBindingResult.errorMessage} - ${simBindingResult.errorDescription}")
       } else {
          // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
@@ -209,9 +213,13 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
 Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
    @Override
    public void onSuccess(IntelligenceResponse response) {
-      String snaRequestId = response.getSnaRequestID();
-      if (snaRequestId == null || snaRequestId.isEmpty()) {
+      SimBindingResult simBindingResult = response.getSimBindingResult();
+      String snaRequestId = simBindingResult != null ? simBindingResult.getSnaRequestId() : null;
+      if (simBindingResult == null) {
          // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
+      } else if (snaRequestId == null || snaRequestId.isEmpty()) {
+         // SIM binding could not be started. Check errorCode, errorMessage and errorDescription, and handle the Intelligence Response as required.
+         Log.e("Sign3SimBinding", "SIM binding failed: " + simBindingResult.getErrorCode() + " " + simBindingResult.getErrorMessage() + " - " + simBindingResult.getErrorDescription());
       } else {
          // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
@@ -228,7 +236,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ## Checking the SIM Binding Status
 
-The score returns as soon as the transaction is open; the binding itself finishes afterwards. Ask the status API what became of the `snaRequestID`.
+The score returns as soon as the transaction is open; the binding itself finishes afterwards. Ask the status API what became of the `simBindingResult.snaRequestId`.
 
 **Call this from your backend.** The credentials below are your tenant id and tenant secret, and they must not ship in the app. The sample app calls it from the device only so the flow can be demonstrated on one screen.
 
@@ -245,7 +253,7 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 | Base URL | `https://intelligence.sign3.in` |
 | Method | `GET` |
 | Path | `/auth/v1/status` |
-| Query | `requestId` — the `snaRequestID` from `IntelligenceResponse` |
+| Query | `requestId` — the `simBindingResult.snaRequestId` from `IntelligenceResponse` |
 | `Authorization` | `Basic` over `<tenantId>:<tenantSecret>`, both provided by Sign3 |
 
 ### Response
@@ -486,6 +494,6 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 ## Changelog
 ### 1.0.0
 - Silent Network Authentication over the carrier network, with automatic fallback to SMS OTP and automatic OTP verification.
-- Driven entirely by the Sign3 Intelligence SDK on login and signup scores; no API to call.
-- `IntelligenceResponse.snaRequestID` carries the transaction id for the `/auth/v1/status` check.
+- Driven entirely by the Sign3 Intelligence SDK on `UserEventType.AUTH` scores; no API to call.
+- `IntelligenceResponse.simBindingResult.snaRequestId` carries the transaction id for the `/auth/v1/status` check; on failure `simBindingResult` carries `errorCode`, `errorMessage` and `errorDescription`.
 - Ships its network security config and consumer ProGuard rules.
