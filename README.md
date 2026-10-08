@@ -9,47 +9,47 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
 ## Adding the SIM Binding SDK to Your Project
 
 1. **Configure the Repository in `settings.gradle`**
-    - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
+   - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
 
-      **Groovy (`settings.gradle`)**
+     **Groovy (`settings.gradle`)**
 
-      ```groovy
-      dependencyResolutionManagement {
-          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-          repositories {
-              google()
-              mavenCentral()
-              maven { url 'https://jitpack.io' }
-              maven {
-                  url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
-                  credentials {
-                      username = "provided in credential doc"
-                      password = "provided in credential doc"
-                  }
-              }
-          }
-      }
-      ```
+     ```groovy
+     dependencyResolutionManagement {
+         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+         repositories {
+             google()
+             mavenCentral()
+             maven { url 'https://jitpack.io' }
+             maven {
+                 url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
+                 credentials {
+                     username = "provided in credential doc"
+                     password = "provided in credential doc"
+                 }
+             }
+         }
+     }
+     ```
 
-      **Kotlin DSL (`settings.gradle.kts`)**
+     **Kotlin DSL (`settings.gradle.kts`)**
 
-      ```kotlin
-      dependencyResolutionManagement {
-          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-          repositories {
-              google()
-              mavenCentral()
-              maven { url = uri("https://jitpack.io") }
-              maven {
-                  url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
-                  credentials {
-                      username = "provided in credential doc"
-                      password = "provided in credential doc"
-                  }
-              }
-          }
-      }
-      ```
+     ```kotlin
+     dependencyResolutionManagement {
+         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+         repositories {
+             google()
+             mavenCentral()
+             maven { url = uri("https://jitpack.io") }
+             maven {
+                 url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
+                 credentials {
+                     username = "provided in credential doc"
+                     password = "provided in credential doc"
+                 }
+             }
+         }
+     }
+     ```
 
 2. **Add the SIM Binding SDK Dependency in App-Level Gradle**
 
@@ -62,8 +62,8 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
        implementation 'com.sign3.simbinding:intelligence-playstore:1.x.x'
    }
    ```
-    - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
-    - Sign3 SIM Binding: checkout the [latest version](#changelog)
+   - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
+   - Sign3 SIM Binding: checkout the [latest version](#changelog)
 
 3. **After adding the dependency, sync your project with Gradle files to ensure the library is properly integrated.**
 
@@ -645,6 +645,48 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 </td>
 </tr>
 </table>
+
+<br>
+
+## High-Level Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Your App
+    participant ISDK as Sign3 Intelligence SDK
+    participant SB as Sign3 SIM Binding SDK
+    participant S3 as Sign3 Backend
+    participant Carrier as Carrier Network
+    participant BE as Your Backend
+
+    App->>ISDK: updateOptions(phoneNumber, UserEventType.AUTH)
+    App->>ISDK: getIntelligence()
+    ISDK->>S3: Score request (event = AUTH)
+    S3->>S3: Open SIM binding transaction (templateID)
+    S3-->>ISDK: IntelligenceResponse + simBindingResult
+    ISDK-->>App: onSuccess(response)
+
+    alt simBindingResult.snaRequestId received (200)
+        ISDK->>SB: initialize(snaRequestId)
+        SB->>Carrier: Silent Network Authentication over cellular data
+        alt Carrier answers
+            Carrier-->>SB: SIM verified
+        else Carrier cannot answer
+            S3-->>App: SMS OTP delivered to the device
+            SB->>SB: Read OTP and verify
+        end
+        SB-->>S3: Transaction result
+        App->>BE: Login API (snaRequestId)
+        loop Until status is SUCCESS or FAILED
+            BE->>S3: GET /auth/v1/status?requestId=snaRequestId
+            S3-->>BE: SUCCESS / PENDING / FAILED
+        end
+        BE-->>App: Login decision
+    else simBindingResult carries an error (400 / 401)
+        App->>App: Handle errorCode, errorMessage, errorDescription
+    end
+```
 
 <br>
 
