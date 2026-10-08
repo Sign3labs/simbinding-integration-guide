@@ -234,6 +234,164 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 ```
 <br>
 
+### SIM Binding Result
+
+`IntelligenceResponse.simBindingResult` carries what the SIM binding backend answered when the Intelligence SDK opened the transaction. The HTTP status below is the one the backend returned to the SDK; your `onSuccess` callback is called either way, so always check `snaRequestId` first.
+
+#### Status code `200` — The transaction was opened
+
+<table>
+<tr>
+<th align="left" width="495">✅ SNA request id received</th>
+</tr>
+<tr>
+<td valign="top" width="495">
+
+```json
+{
+  "simBindingResult": {
+    "snaRequestId": "ARID_A1B2C3D4E5F6"
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+
+#### Status code `400` — The request was not accepted
+
+<table>
+<tr>
+<th align="left" width="330">⚠️ 7119 · Invalid request Id</th>
+<th align="left" width="330">⚠️ 7106 · Invalid phoneNumber or email</th>
+<th align="left" width="330">⚠️ 7102 · Invalid phone number</th>
+<th align="left" width="330">⚠️ 7104 · Invalid email</th>
+<th align="left" width="330">⚠️ 7113 · Invalid expiry</th>
+</tr>
+<tr>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "7119",
+    "errorDescription": "Request error: Invalid request Id"
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "7106",
+    "errorDescription": "Request error: Invalid phoneNumber or email."
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "7102",
+    "errorDescription": "Request error: Invalid phone number"
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "7104",
+    "errorDescription": "Request error: Invalid email"
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "7113",
+    "errorDescription": "Request error: Invalid expiry"
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+
+#### Status code `401` — The tenant was not authorised
+
+<table>
+<tr>
+<th align="left" width="330">🔒 7012 · Credentials empty</th>
+<th align="left" width="330">🔒 7002 · Invalid credentials</th>
+<th align="left" width="330">🔒 7019 · Merchant blocked</th>
+</tr>
+<tr>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Access blocked",
+    "errorCode": "7012",
+    "errorDescription": "Authorization error: Merchant credentials are empty"
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Access blocked",
+    "errorCode": "7002",
+    "errorDescription": "Authorization error: Invalid credentials"
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Merchant Blocked",
+    "errorCode": "7019",
+    "errorDescription": "Your account has been temporarily Blocked. Please contact support for assistance."
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+
+<br>
+
+
 ## Checking the SIM Binding Status
 
 The score returns as soon as the transaction is open; the binding itself finishes afterwards. Ask the status API what became of the `simBindingResult.snaRequestId`.
