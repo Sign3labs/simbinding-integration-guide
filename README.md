@@ -78,6 +78,7 @@ Add the following permissions to your app's `AndroidManifest.xml`. The SDK itsel
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.READ_SMS"/>
 ```
 
 ### Network security config
@@ -173,7 +174,7 @@ Options are reset after every score, so update them again before each login or s
 ```kotlin
 val updateOptions = UpdateOptions.Builder()
    .setPhoneNumber("919876543210")        // country code + number, digits only
-   .setUserEventType(UserEventType.LOGIN) // LOGIN or SIGNUP
+   .setUserEventType(UserEventType.AUTH) // You have to set User event type AUTH to initiate Simbinding
    .build()
 
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
@@ -182,9 +183,9 @@ Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListene
    override fun onSuccess(response: IntelligenceResponse) {
       val snaRequestId = response.snaRequestID
       if (snaRequestId.isNullOrEmpty()) {
-         // SIM binding did not start for this score
+         // SIM binding was not initiated for your tenant. Handle the Intelligence Response as required.
       } else {
-         // SIM binding is running. Send this id to your backend for the status check.
+         // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
       }
    }
@@ -199,8 +200,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListene
 
 ```java
 UpdateOptions updateOptions = new UpdateOptions.Builder()
-        .setPhoneNumber("919876543210")        // country code + number, digits only
-        .setUserEventType(UserEventType.LOGIN) // LOGIN or SIGNUP
+        .setPhoneNumber("919876543210")        // Pass the phone number with the country code
+        .setUserEventType(UserEventType.AUTH) // Set UserEventType.AUTH to initiate SIM binding
         .build();
 
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
@@ -210,9 +211,9 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
    public void onSuccess(IntelligenceResponse response) {
       String snaRequestId = response.getSnaRequestID();
       if (snaRequestId == null || snaRequestId.isEmpty()) {
-         // SIM binding did not start for this score
+         // SIM binding was not initiated for your tenant. Handle the Intelligence Response as required.
       } else {
-         // SIM binding is running. Send this id to your backend for the status check.
+         // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
       }
    }
