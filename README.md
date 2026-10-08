@@ -59,7 +59,7 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
        implementation 'com.sign3.intelligence:intelligence-playstore-lite:5.x.x'
 
        // Sign3 SIM Binding
-       implementation 'com.sign3.simbinding:intelligence-playstore:1.0.0'
+       implementation 'com.sign3.simbinding:intelligence-playstore:1.x.x'
    }
    ```
    - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
@@ -159,15 +159,15 @@ public void onCreate() {
 
 ## Starting SIM Binding
 
-You do not call the SIM binding SDK yourself. The Sign3 Intelligence SDK runs SIM binding as part of a login or signup score:
+Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, you do not need to call the SIM binding SDK separately. The Sign3 Intelligence SDK internally handles the SNA and SMS flow.
 
-1. Ask Sign3 to enable SIM binding for your tenant.
-2. Set the user's phone number through `updateOptions`, **with the country code and no `+` or spaces** (`919876543210`), and a `LOGIN` or `SIGNUP` event type. SIM binding does not run for `TRANSACTION` or `OTHERS`.
+1. Based on your requirements, we will create a template ID for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
+2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding is not triggered for TRANSACTION or OTHERS.
 3. Call `getIntelligence()`.
+4. Once you receive the `snaRequestID`, call the Status Check API along with your Login API. The Status Check API should be called backend-to-backend for fraud prevention.
 
-On that score the Intelligence SDK brings the SIM binding engine up, binds the SIM under the transaction the backend opened, and when the carrier cannot answer and an OTP is sent instead, reads the OTP and verifies it. The score response carries the transaction id as `IntelligenceResponse.snaRequestID` — hold on to it, it is what the status API is asked about.
 
-Options are reset after every score, so update them again before each login or signup.
+NOTE: Options are reset after every score, so update them again before each login or signup.
 
 ### For Kotlin
 
@@ -183,7 +183,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListene
    override fun onSuccess(response: IntelligenceResponse) {
       val snaRequestId = response.snaRequestID
       if (snaRequestId.isNullOrEmpty()) {
-         // SIM binding was not initiated for your tenant. Handle the Intelligence Response as required.
+         // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
       } else {
          // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
@@ -211,7 +211,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
    public void onSuccess(IntelligenceResponse response) {
       String snaRequestId = response.getSnaRequestID();
       if (snaRequestId == null || snaRequestId.isEmpty()) {
-         // SIM binding was not initiated for your tenant. Handle the Intelligence Response as required.
+         // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
       } else {
          // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
          Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
