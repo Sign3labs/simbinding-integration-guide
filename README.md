@@ -271,11 +271,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "7119",
-    "errorDescription": "Request error: Invalid request Id"
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "7119",
+      "errorDescription": "Request error: Invalid request Id"
+   }
 }
 ```
 
@@ -284,11 +284,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "7106",
-    "errorDescription": "Request error: Invalid phoneNumber or email."
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "7106",
+      "errorDescription": "Request error: Invalid phoneNumber or email."
+   }
 }
 ```
 
@@ -297,11 +297,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "7102",
-    "errorDescription": "Request error: Invalid phone number"
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "7102",
+      "errorDescription": "Request error: Invalid phone number"
+   }
 }
 ```
 
@@ -310,11 +310,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "7104",
-    "errorDescription": "Request error: Invalid email"
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "7104",
+      "errorDescription": "Request error: Invalid email"
+   }
 }
 ```
 
@@ -323,11 +323,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "7113",
-    "errorDescription": "Request error: Invalid expiry"
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "7113",
+      "errorDescription": "Request error: Invalid expiry"
+   }
 }
 ```
 
@@ -343,11 +343,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Timeout Error",
-    "errorCode": "9001",
-    "errorDescription": "Sign3 SIM binding creation timed out."
-  }
+   "simBindingResult": {
+      "errorMessage": "Timeout Error",
+      "errorCode": "9001",
+      "errorDescription": "Sign3 SIM binding creation timed out."
+   }
 }
 ```
 
@@ -356,11 +356,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "9003",
-    "errorDescription": "Sign3 SIM binding requires a phone number containing the country code followed by the subscriber number."
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "9003",
+      "errorDescription": "Sign3 SIM binding requires a phone number containing the country code followed by the subscriber number."
+   }
 }
 ```
 
@@ -369,11 +369,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Invalid Request",
-    "errorCode": "9004",
-    "errorDescription": "The SIM binding template ID is not configured for this tenant."
-  }
+   "simBindingResult": {
+      "errorMessage": "Invalid Request",
+      "errorCode": "9004",
+      "errorDescription": "The SIM binding template ID is not configured for this tenant."
+   }
 }
 ```
 
@@ -394,11 +394,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Access blocked",
-    "errorCode": "7012",
-    "errorDescription": "Authorization error: Merchant credentials are empty"
-  }
+   "simBindingResult": {
+      "errorMessage": "Access blocked",
+      "errorCode": "7012",
+      "errorDescription": "Authorization error: Merchant credentials are empty"
+   }
 }
 ```
 
@@ -407,11 +407,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Access blocked",
-    "errorCode": "7002",
-    "errorDescription": "Authorization error: Invalid credentials"
-  }
+   "simBindingResult": {
+      "errorMessage": "Access blocked",
+      "errorCode": "7002",
+      "errorDescription": "Authorization error: Invalid credentials"
+   }
 }
 ```
 
@@ -420,11 +420,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Merchant Blocked",
-    "errorCode": "7019",
-    "errorDescription": "Your account has been temporarily Blocked. Please contact support for assistance."
-  }
+   "simBindingResult": {
+      "errorMessage": "Merchant Blocked",
+      "errorCode": "7019",
+      "errorDescription": "Your account has been temporarily Blocked. Please contact support for assistance."
+   }
 }
 ```
 
@@ -439,11 +439,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Access blocked",
-    "errorCode": "9002",
-    "errorDescription": "Sign3 SIM binding tenantId or tenantSecret is not configured for this tenant."
-  }
+   "simBindingResult": {
+      "errorMessage": "Access blocked",
+      "errorCode": "9002",
+      "errorDescription": "Sign3 SIM binding tenantId or tenantSecret is not configured for this tenant."
+   }
 }
 ```
 
@@ -452,11 +452,11 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "errorMessage": "Access blocked",
-    "errorCode": "9005",
-    "errorDescription": "Sign3 SIM binding is not enabled for this tenant."
-  }
+   "simBindingResult": {
+      "errorMessage": "Access blocked",
+      "errorCode": "9005",
+      "errorDescription": "Sign3 SIM binding is not enabled for this tenant."
+   }
 }
 ```
 
@@ -504,137 +504,137 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "auths": [
-    {
-      "identityType": "MOBILE",
-      "identityValue": "917069914791",
-      "channel": "SILENT_AUTH",
-      "methods": [
-        "SILENT_AUTH"
-      ],
-      "status": "SUCCESS",
-      "verifiedTimestamp": 1781091069000,
-      "type": "PRIMARY"
-    }
-  ],
-  "derivedOperator": "AIRTEL",
-  "phoneDetail": {
-    "countryCode": "91",
-    "country": "IN",
-    "type": "MOBILE",
-    "homeOperator": "VI",
-    "location": "India",
-    "timeZones": [
-      "Asia/Calcutta"
-    ]
-  },
-  "simDetail": {
-    "operator": "AIRTEL",
-    "mcc": 405,
-    "mnc": 51
-  },
-  "networkDetail": {
-    "ip": "2401:4900:1c50:1a3b::1",
-    "ipType": "IPV6",
-    "operator": "AIRTEL",
-    "callback": {
-      "ip": "2401:4900:aabb:f09e::68fa:fe37",
-      "operator": "AIRTEL",
-      "userAgent": "Chrome/147.0.0.0 Mobile Safari/537.36"
-    }
-  }
-}
-```
-
-</td>
-<td valign="top" width="330">
-
-```json
-{
-  "auths": [
-    {
-      "identityType": "MOBILE",
-      "identityValue": "917069914791",
-      "channel": "SILENT_AUTH",
-      "methods": [
-        "SILENT_AUTH"
-      ],
-      "status": "PENDING",
-      "type": "PRIMARY"
-    }
-  ],
-  "derivedOperator": "AIRTEL",
-  "phoneDetail": {
-    "countryCode": "91",
-    "country": "IN",
-    "type": "MOBILE",
-    "homeOperator": "VI",
-    "location": "India",
-    "timeZones": [
-      "Asia/Calcutta"
-    ]
-  },
-  "simDetail": {
-    "operator": "AIRTEL",
-    "mcc": 405,
-    "mnc": 51
-  },
-  "networkDetail": {
-    "ip": "2401:4900:1c50:1a3b::1",
-    "ipType": "IPV6",
-    "operator": "AIRTEL"
-  }
-}
-
-
-
-
-
-
-```
-
-</td>
-<td valign="top" width="330">
-
-```json
-{
-  "auths": [
-    {
-      "identityType": "MOBILE",
-      "identityValue": "917069914791",
-      "channel": "SILENT_AUTH",
-      "methods": [
-        "SILENT_AUTH"
-      ],
-      "status": "FAILED",
-      "type": "PRIMARY",
-      "error": {
-        "errorCode": "SP40005",
-        "message": "Operator not supported",
-        "description": "This operator isn’t supported. Please try a different network."
+   "auths": [
+      {
+         "identityType": "MOBILE",
+         "identityValue": "917069914791",
+         "channel": "SILENT_AUTH",
+         "methods": [
+            "SILENT_AUTH"
+         ],
+         "status": "SUCCESS",
+         "verifiedTimestamp": 1781091069000,
+         "type": "PRIMARY"
       }
-    }
-  ],
-  "derivedOperator": "JIO",
-  "phoneDetail": {
-    "countryCode": "91",
-    "country": "IN",
-    "type": "MOBILE",
-    "homeOperator": "VI",
-    "location": "India",
-    "timeZones": [
-      "Asia/Calcutta"
-    ]
-  },
-  "simDetail": {
-    "operator": "JIO",
-    "mcc": 405,
-    "mnc": 872
-  },
-  "networkDetail": {
-    "ip": "49.204.148.177",
-    "ipType": "IPV4"
-  }
+   ],
+   "derivedOperator": "AIRTEL",
+   "phoneDetail": {
+      "countryCode": "91",
+      "country": "IN",
+      "type": "MOBILE",
+      "homeOperator": "VI",
+      "location": "India",
+      "timeZones": [
+         "Asia/Calcutta"
+      ]
+   },
+   "simDetail": {
+      "operator": "AIRTEL",
+      "mcc": 405,
+      "mnc": 51
+   },
+   "networkDetail": {
+      "ip": "2401:4900:1c50:1a3b::1",
+      "ipType": "IPV6",
+      "operator": "AIRTEL",
+      "callback": {
+         "ip": "2401:4900:aabb:f09e::68fa:fe37",
+         "operator": "AIRTEL",
+         "userAgent": "Chrome/147.0.0.0 Mobile Safari/537.36"
+      }
+   }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+   "auths": [
+      {
+         "identityType": "MOBILE",
+         "identityValue": "917069914791",
+         "channel": "SILENT_AUTH",
+         "methods": [
+            "SILENT_AUTH"
+         ],
+         "status": "PENDING",
+         "type": "PRIMARY"
+      }
+   ],
+   "derivedOperator": "AIRTEL",
+   "phoneDetail": {
+      "countryCode": "91",
+      "country": "IN",
+      "type": "MOBILE",
+      "homeOperator": "VI",
+      "location": "India",
+      "timeZones": [
+         "Asia/Calcutta"
+      ]
+   },
+   "simDetail": {
+      "operator": "AIRTEL",
+      "mcc": 405,
+      "mnc": 51
+   },
+   "networkDetail": {
+      "ip": "2401:4900:1c50:1a3b::1",
+      "ipType": "IPV6",
+      "operator": "AIRTEL"
+   }
+}
+
+
+
+
+
+
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+   "auths": [
+      {
+         "identityType": "MOBILE",
+         "identityValue": "917069914791",
+         "channel": "SILENT_AUTH",
+         "methods": [
+            "SILENT_AUTH"
+         ],
+         "status": "FAILED",
+         "type": "PRIMARY",
+         "error": {
+            "errorCode": "SP40005",
+            "message": "Operator not supported",
+            "description": "This operator isn’t supported. Please try a different network."
+         }
+      }
+   ],
+   "derivedOperator": "JIO",
+   "phoneDetail": {
+      "countryCode": "91",
+      "country": "IN",
+      "type": "MOBILE",
+      "homeOperator": "VI",
+      "location": "India",
+      "timeZones": [
+         "Asia/Calcutta"
+      ]
+   },
+   "simDetail": {
+      "operator": "JIO",
+      "mcc": 405,
+      "mnc": 872
+   },
+   "networkDetail": {
+      "ip": "49.204.148.177",
+      "ipType": "IPV4"
+   }
 }
 
 
@@ -656,9 +656,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "message": "Invalid Request",
-  "errorCode": "7170",
-  "description": "Auth not started yet. Please initiate authentication first."
+   "message": "Invalid Request",
+   "errorCode": "7170",
+   "description": "Auth not started yet. Please initiate authentication first."
 }
 ```
 
@@ -667,9 +667,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "message": "Invalid Request",
-  "errorCode": "7119",
-  "description": "Request error: Invalid request Id"
+   "message": "Invalid Request",
+   "errorCode": "7119",
+   "description": "Request error: Invalid request Id"
 }
 ```
 
@@ -690,9 +690,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "message": "Access blocked",
-  "errorCode": "7012",
-  "description": "Authorization error: Merchant credentials are empty"
+   "message": "Access blocked",
+   "errorCode": "7012",
+   "description": "Authorization error: Merchant credentials are empty"
 }
 ```
 
@@ -701,9 +701,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "message": "Access blocked",
-  "errorCode": "7002",
-  "description": "Authorization error: Invalid credentials"
+   "message": "Access blocked",
+   "errorCode": "7002",
+   "description": "Authorization error: Invalid credentials"
 }
 ```
 
@@ -712,9 +712,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-  "message": "Merchant Blocked",
-  "errorCode": "7019",
-  "description": "Your account has been temporarily Blocked. Please contact support for assistance."
+   "message": "Merchant Blocked",
+   "errorCode": "7019",
+   "description": "Your account has been temporarily Blocked. Please contact support for assistance."
 }
 ```
 
@@ -726,42 +726,27 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ## High-Level Flow
 
+SIM binding in four simple steps: Sign3 switches it on, your app asks for a score, you get an id, and your backend checks what happened to it.
+
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant App as Your App
-    participant ISDK as Sign3 Intelligence SDK
-    participant SB as Sign3 SIM Binding SDK
-    participant S3 as Sign3 Backend
-    participant Carrier as Carrier Network
-    participant BE as Your Backend
+flowchart TD
+    A["1. Sign3 enables SIM binding for your tenant"]
+    B["2. Your app sets the phone number and the AUTH event, then calls getIntelligence()"]
+    C{"3. Did the response carry an snaRequestId?"}
+    NO["No &nbsp;→&nbsp; onError gives you the error code and message. Show it or retry."]
+    YES["Yes &nbsp;→&nbsp; SIM binding has started. Send the snaRequestId to your backend."]
+    D["4. Your backend calls the Status Check API with that id until the status is SUCCESS or FAILED"]
 
-    App->>ISDK: updateOptions(phoneNumber, UserEventType.AUTH)
-    App->>ISDK: getIntelligence()
-    ISDK->>S3: Score request (event = AUTH)
-    S3->>S3: Open SIM binding transaction (templateID)
-    S3-->>ISDK: IntelligenceResponse + simBindingResult
-    ISDK-->>App: onSuccess(response)
+    A --> B --> C
+    C -- No --> NO
+    C -- Yes --> YES --> D
 
-    alt simBindingResult.snaRequestId received (200)
-        ISDK->>SB: initialize(snaRequestId)
-        SB->>Carrier: Silent Network Authentication over cellular data
-        alt Carrier answers
-            Carrier-->>SB: SIM verified
-        else Carrier cannot answer
-            S3-->>App: SMS OTP delivered to the device
-            SB->>SB: Read OTP and verify
-        end
-        SB-->>S3: Transaction result
-        App->>BE: Login API (snaRequestId)
-        loop Until status is SUCCESS or FAILED
-            BE->>S3: GET /auth/v1/status?requestId=snaRequestId
-            S3-->>BE: SUCCESS / PENDING / FAILED
-        end
-        BE-->>App: Login decision
-    else simBindingResult carries an error (400 / 401)
-        App->>App: Handle errorCode, errorMessage, errorDescription
-    end
+    style A fill:none,stroke:#2e7d32,stroke-width:2px
+    style B fill:none,stroke:#1565c0,stroke-width:2px
+    style C fill:none,stroke:#1565c0,stroke-width:2px
+    style NO fill:none,stroke:#c62828,stroke-width:2px
+    style YES fill:none,stroke:#1565c0,stroke-width:2px
+    style D fill:none,stroke:#ef6c00,stroke-width:2px
 ```
 
 <br>
