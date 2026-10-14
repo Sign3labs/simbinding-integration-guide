@@ -724,7 +724,7 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 <br>
 
-## High-Level Flow
+## Flow Diagram
 
 SIM binding in four simple steps: Sign3 switches it on, your app asks for a score, you get an id, and your backend checks what happened to it.
 
