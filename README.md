@@ -180,21 +180,18 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
 
 Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListener {
    override fun onSuccess(response: IntelligenceResponse) {
-      val simBindingResult = response.simBindingResult
-      val snaRequestId = simBindingResult?.snaRequestId
-      if (simBindingResult == null) {
-         // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
-      } else if (snaRequestId.isNullOrEmpty()) {
-         // SIM binding could not be started. Check errorCode, errorMessage and errorDescription, and handle the Intelligence Response as required.
-         Log.e("Sign3SimBinding", "SIM binding failed: ${simBindingResult.errorCode} ${simBindingResult.errorMessage} - ${simBindingResult.errorDescription}")
+      val snaRequestId = response.snaRequestId
+      if (snaRequestId.isNullOrEmpty()) {
+         // SIM binding was not started for this request. Handle the Intelligence Response as required.
       } else {
-         // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
-         Log.i("Sign3SimBinding", "SIM binding under $snaRequestId")
+         // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
+         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId $snaRequestId")
       }
    }
 
    override fun onError(error: IntelligenceError) {
-      // Something went wrong, handle the error message
+      // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
+      Log.e("Sign3SimBinding", "requestId=${error.requestId} ${error.errorMessage}")
    }
 })
 ```
@@ -212,25 +209,26 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
 Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
    @Override
    public void onSuccess(IntelligenceResponse response) {
-      SimBindingResult simBindingResult = response.getSimBindingResult();
-      String snaRequestId = simBindingResult != null ? simBindingResult.getSnaRequestId() : null;
-      if (simBindingResult == null) {
-         // SIM binding is not enabled for your tenant. Please contact Sign3 to enable it, or handle the Intelligence Response as required.
-      } else if (snaRequestId == null || snaRequestId.isEmpty()) {
-         // SIM binding could not be started. Check errorCode, errorMessage and errorDescription, and handle the Intelligence Response as required.
-         Log.e("Sign3SimBinding", "SIM binding failed: " + simBindingResult.getErrorCode() + " " + simBindingResult.getErrorMessage() + " - " + simBindingResult.getErrorDescription());
+      String snaRequestId = response.getSnaRequestId();
+      if (snaRequestId == null || snaRequestId.isEmpty()) {
+         // SIM binding was not started for this request. Handle the Intelligence Response as required.
       } else {
-         // Recommended: Once you receive the SNA request ID, call the Status Check API along with your Login API. The Status Check API should be called from your backend to backend for fraud prevention.
-         Log.i("Sign3SimBinding", "SIM binding under " + snaRequestId);
+         // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
+         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId " + snaRequestId);
       }
    }
 
    @Override
    public void onError(IntelligenceError error) {
-      // Something went wrong, handle the error message
+      // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
+      Log.e("Sign3SimBinding", "requestId=" + error.getRequestId() + " " + error.getErrorMessage());
    }
 });
 ```
+
+> [!IMPORTANT]
+> **Recommended:** Once you receive the `snaRequestId`, poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed. Keep polling until it reaches a final/failed status. Never call the Status Check API from the app, since a status checked on the device can be tampered and the credentials would be exposed.
+
 <br>
 
 ### SIM Binding Result
@@ -248,9 +246,9 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-  "simBindingResult": {
-    "snaRequestId": "ARID_A1B2C3D4E5F6"
-  }
+   "simBindingResult": {
+      "snaRequestId": "ARID_A1B2C3D4E5F6"
+   }
 }
 ```
 
@@ -335,6 +333,52 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 </td>
 </tr>
+<tr>
+<th align="left" width="330">⏱️ 9001 · Timeout Error</th>
+<th align="left" width="330">⚠️ 9003 · Invalid phone number format</th>
+<th align="left" width="330">⚠️ 9004 · Template id not configured</th>
+</tr>
+<tr>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Timeout Error",
+    "errorCode": "9001",
+    "errorDescription": "Sign3 SIM binding creation timed out."
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "9003",
+    "errorDescription": "Sign3 SIM binding requires a phone number containing the country code followed by the subscriber number."
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Invalid Request",
+    "errorCode": "9004",
+    "errorDescription": "The SIM binding template ID is not configured for this tenant."
+  }
+}
+```
+
+</td>
+</tr>
 </table>
 
 #### Status code `401` — The tenant was not authorised
@@ -386,6 +430,38 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 </td>
 </tr>
+<tr>
+<th align="left" width="330">🔒 9002 · Tenant credentials not configured</th>
+<th align="left" width="330">🔒 9005 · SIM binding not enabled</th>
+</tr>
+<tr>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Access blocked",
+    "errorCode": "9002",
+    "errorDescription": "Sign3 SIM binding tenantId or tenantSecret is not configured for this tenant."
+  }
+}
+```
+
+</td>
+<td valign="top" width="330">
+
+```json
+{
+  "simBindingResult": {
+    "errorMessage": "Access blocked",
+    "errorCode": "9005",
+    "errorDescription": "Sign3 SIM binding is not enabled for this tenant."
+  }
+}
+```
+
+</td>
+</tr>
 </table>
 
 <br>
@@ -393,7 +469,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ## Checking the SIM Binding Status
 
-The score returns as soon as the transaction is open; the binding itself finishes afterwards. Ask the status API what became of the `simBindingResult.snaRequestId`.
+The score returns as soon as the transaction is open; the binding itself finishes afterwards. Ask the status API what became of the `snaRequestId`.
 
 **Call this from your backend.** The credentials below are your tenant id and tenant secret, and they must not ship in the app. The sample app calls it from the device only so the flow can be demonstrated on one screen.
 
@@ -410,7 +486,7 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 | Base URL | `https://intelligence.sign3.in` |
 | Method | `GET` |
 | Path | `/auth/v1/status` |
-| Query | `requestId` — the `simBindingResult.snaRequestId` from `IntelligenceResponse` |
+| Query | `requestId` — the `snaRequestId` from `IntelligenceResponse` |
 | `Authorization` | `Basic` over `<tenantId>:<tenantSecret>`, both provided by Sign3 |
 
 ### Response
