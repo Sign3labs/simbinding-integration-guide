@@ -9,47 +9,47 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
 ## Adding the SIM Binding SDK to Your Project
 
 1. **Configure the Repository in `settings.gradle`**
-   - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
+    - Open your project's `settings.gradle` file and add the Sign3 JFrog repository to the `dependencyResolutionManagement` block. Please collect the **username** and **password** from the credentials document.
 
-     **Groovy (`settings.gradle`)**
+      **Groovy (`settings.gradle`)**
 
-     ```groovy
-     dependencyResolutionManagement {
-         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-         repositories {
-             google()
-             mavenCentral()
-             maven { url 'https://jitpack.io' }
-             maven {
-                 url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
-                 credentials {
-                     username = "provided in credential doc"
-                     password = "provided in credential doc"
-                 }
-             }
-         }
-     }
-     ```
+      ```groovy
+      dependencyResolutionManagement {
+          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+          repositories {
+              google()
+              mavenCentral()
+              maven { url 'https://jitpack.io' }
+              maven {
+                  url "https://sign3.jfrog.io/artifactory/intelligence-generic-local/"
+                  credentials {
+                      username = "provided in credential doc"
+                      password = "provided in credential doc"
+                  }
+              }
+          }
+      }
+      ```
 
-     **Kotlin DSL (`settings.gradle.kts`)**
+      **Kotlin DSL (`settings.gradle.kts`)**
 
-     ```kotlin
-     dependencyResolutionManagement {
-         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-         repositories {
-             google()
-             mavenCentral()
-             maven { url = uri("https://jitpack.io") }
-             maven {
-                 url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
-                 credentials {
-                     username = "provided in credential doc"
-                     password = "provided in credential doc"
-                 }
-             }
-         }
-     }
-     ```
+      ```kotlin
+      dependencyResolutionManagement {
+          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+          repositories {
+              google()
+              mavenCentral()
+              maven { url = uri("https://jitpack.io") }
+              maven {
+                  url = uri("https://sign3.jfrog.io/artifactory/intelligence-generic-local/")
+                  credentials {
+                      username = "provided in credential doc"
+                      password = "provided in credential doc"
+                  }
+              }
+          }
+      }
+      ```
 
 2. **Add the SIM Binding SDK Dependency in App-Level Gradle**
 
@@ -62,8 +62,8 @@ The SDK is headless and is driven entirely by the Sign3 Intelligence SDK. There 
        implementation 'com.sign3.simbinding:intelligence-playstore:1.x.x'
    }
    ```
-   - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
-   - Sign3 SIM Binding: checkout the [latest version](#changelog)
+    - Sign3 Intelligence: checkout the [latest_version](https://github.com/Sign3labs/sdk-integration-guide/tree/main?tab=readme-ov-file#changelog)
+    - Sign3 SIM Binding: checkout the [latest version](#changelog)
 
 3. **After adding the dependency, sync your project with Gradle files to ensure the library is properly integrated.**
 
@@ -86,19 +86,19 @@ Once you have successfully integrated the Sign3 SIM Binding SDK in your applicat
 
 ```xml
 <application
-        android:networkSecurityConfig="@xml/sign3_network_security_config"
-        ... >
+    android:networkSecurityConfig="@xml/sign3_network_security_config"
+    ... >
 ```
 
 If your app already has its own `networkSecurityConfig`, do not replace it. Instead, add the following inside your existing `<network-security-config>`:
 
 ```xml
 <domain-config cleartextTrafficPermitted="true">
-   <domain includeSubdomains="true">80.in.safr.sekuramobile.com</domain>
-   <domain includeSubdomains="true">partnerapi.jio.com</domain>
-   <domain includeSubdomains="true">in-vil.ipification.com</domain>
-   <domain includeSubdomains="true">api-csp.airtel.in</domain>
-   <domain includeSubdomains="true">v4-api-csp.airtel.in</domain>
+    <domain includeSubdomains="true">80.in.safr.sekuramobile.com</domain>
+    <domain includeSubdomains="true">partnerapi.jio.com</domain>
+    <domain includeSubdomains="true">in-vil.ipification.com</domain>
+    <domain includeSubdomains="true">api-csp.airtel.in</domain>
+    <domain includeSubdomains="true">v4-api-csp.airtel.in</domain>
 </domain-config>
 ```
 
@@ -114,22 +114,22 @@ If your app already has its own `networkSecurityConfig`, do not replace it. Inst
 
 ```kotlin
 override fun onCreate() {
-   super.onCreate()
+    super.onCreate()
 
-   // Other initialisation code
-   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      val options = Options.Builder()
-         .setClientId("<SIGN3_CLIENT_ID>")
-         .setClientSecret("<SIGN3_CLIENT_SECRET>")
-         .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
-         .setEnvironment(if (BuildConfig.DEBUG) Options.ENV_DEV else Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
-         .build()
+    // Other initialisation code
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val options = Options.Builder()
+            .setClientId("<SIGN3_CLIENT_ID>")
+            .setClientSecret("<SIGN3_CLIENT_SECRET>")
+            .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
+            .setEnvironment(if (BuildConfig.DEBUG) Options.ENV_DEV else Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
+            .build()
 
-      Sign3Intelligence.getInstance(this).initAsync(options) {
-         // to check if the SDK is initialized correctly or not
-         Log.i("TAG_AppInstance", "Sign3Intelligence init : $it")
-      }
-   }
+        Sign3Intelligence.getInstance(this).initAsync(options) {
+            // to check if the SDK is initialized correctly or not
+            Log.i("TAG_AppInstance", "Sign3Intelligence init : $it")
+        }
+    }
 
 }
 ```
@@ -139,19 +139,19 @@ override fun onCreate() {
 ```java
 @Override
 public void onCreate() {
-   super.onCreate();
+    super.onCreate();
 
-   // Other initialisation code
-   Options options = new Options.Builder()
-           .setClientId("<SIGN3_CLIENT_ID>")
-           .setClientSecret("<SIGN3_CLIENT_SECRET>")
-           .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
-           .setEnvironment(BuildConfig.DEBUG ? Options.ENV_DEV : Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
-           .build();
+    // Other initialisation code
+    Options options = new Options.Builder()
+            .setClientId("<SIGN3_CLIENT_ID>")
+            .setClientSecret("<SIGN3_CLIENT_SECRET>")
+            .setSSLPinning(true) // Optional: If you want SSL pinning in API calls, default value is false.
+            .setEnvironment(BuildConfig.DEBUG ? Options.ENV_DEV : Options.ENV_PROD) // For Prod: Options.ENV_PROD, For Dev: Options.ENV_DEV
+            .build();
 
-   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      Sign3Intelligence.getInstance(this).initAsync(options);
-   }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        Sign3Intelligence.getInstance(this).initAsync(options);
+    }
 }
 ```
 <br>
@@ -163,7 +163,7 @@ Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, yo
 1. Based on your requirements, we will create a `templateID` for SNA, SMS, or SNA + SMS authentication and use that template ID for authentication.
 2. Set the user's phone number using updateOptions, including the country code without + or spaces (e.g., 919876543210), and set the UserEventType to AUTH. SIM binding runs only for the AUTH event type; it is not triggered for LOGIN, SIGNUP, TRANSACTION or OTHERS.
 3. Call `getIntelligence()`.
-4. The response carries a `simBindingResult` object. On success it holds the `snaRequestId`; on failure it holds `errorCode`, `errorMessage` and `errorDescription` instead. Once you receive the `snaRequestId`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
+4. On success, `onSuccess` receives an `IntelligenceResponse` whose `snaRequestId` holds the SNA request id. On failure, `onError` receives an `IntelligenceError` whose `errorMessage` carries the error code, message and description. Once you receive the `snaRequestId`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
 
 
 NOTE: Options are reset after every score, so update them again before each AUTH score.
@@ -172,27 +172,27 @@ NOTE: Options are reset after every score, so update them again before each AUTH
 
 ```kotlin
 val updateOptions = UpdateOptions.Builder()
-   .setPhoneNumber("919876543210")        // Pass the phone number with the country code
-   .setUserEventType(UserEventType.AUTH) // Set UserEventType.AUTH to initiate SIM binding
-   .build()
+    .setPhoneNumber("919876543210")        // Pass the phone number with the country code
+    .setUserEventType(UserEventType.AUTH) // Set UserEventType.AUTH to initiate SIM binding
+    .build()
 
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
 
 Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListener {
-   override fun onSuccess(response: IntelligenceResponse) {
-      val snaRequestId = response.snaRequestId
-      if (snaRequestId.isNullOrEmpty()) {
-         // SIM binding was not started for this request. Handle the Intelligence Response as required.
-      } else {
-         // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
-         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId $snaRequestId")
-      }
-   }
+    override fun onSuccess(response: IntelligenceResponse) {
+        val snaRequestId = response.snaRequestId
+        if (snaRequestId.isNullOrEmpty()) {
+            // SIM binding was not started for this request. Handle the Intelligence Response as required.
+        } else {
+            // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
+            Log.i("Sign3SimBinding", "SIM binding started with snaRequestId $snaRequestId")
+        }
+    }
 
-   override fun onError(error: IntelligenceError) {
-      // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
-      Log.e("Sign3SimBinding", "requestId=${error.requestId} ${error.errorMessage}")
-   }
+    override fun onError(error: IntelligenceError) {
+        // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
+        Log.e("Sign3SimBinding", "requestId=${error.requestId} ${error.errorMessage}")
+    }
 })
 ```
 
@@ -207,33 +207,33 @@ UpdateOptions updateOptions = new UpdateOptions.Builder()
 Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
 
 Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
-   @Override
-   public void onSuccess(IntelligenceResponse response) {
-      String snaRequestId = response.getSnaRequestId();
-      if (snaRequestId == null || snaRequestId.isEmpty()) {
-         // SIM binding was not started for this request. Handle the Intelligence Response as required.
-      } else {
-         // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
-         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId " + snaRequestId);
-      }
-   }
+    @Override
+    public void onSuccess(IntelligenceResponse response) {
+        String snaRequestId = response.getSnaRequestId();
+        if (snaRequestId == null || snaRequestId.isEmpty()) {
+            // SIM binding was not started for this request. Handle the Intelligence Response as required.
+        } else {
+            // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
+            Log.i("Sign3SimBinding", "SIM binding started with snaRequestId " + snaRequestId);
+        }
+    }
 
-   @Override
-   public void onError(IntelligenceError error) {
-      // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
-      Log.e("Sign3SimBinding", "requestId=" + error.getRequestId() + " " + error.getErrorMessage());
-   }
+    @Override
+    public void onError(IntelligenceError error) {
+        // SIM binding could not be started or failed. Check IntelligenceError for the error code, message, and description.
+        Log.e("Sign3SimBinding", "requestId=" + error.getRequestId() + " " + error.getErrorMessage());
+    }
 });
 ```
 
 > [!IMPORTANT]
-> **Recommended:** Once you receive the `snaRequestId`, poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed. Keep polling until it reaches a final/failed status. Never call the Status Check API from the app, since a status checked on the device can be tampered and the credentials would be exposed.
+> **Recommended:** Once you receive the `snaRequestId`, poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed. Keep polling until it reaches a success/failed status. Never call the Status Check API from the app side, since a status checked on the device can be tampered and the credentials would be exposed.
 
 <br>
 
 ### SIM Binding Result
 
-`IntelligenceResponse.simBindingResult` carries what the SIM binding backend answered when the Intelligence SDK opened the transaction. The HTTP status below is the one the backend returned to the SDK; your `onSuccess` callback is called either way, so always check `snaRequestId` first.
+The HTTP status below is the one the SIM binding backend returned to the Intelligence SDK when it opened the transaction. On `200` the SDK calls `onSuccess` with an `IntelligenceResponse` carrying the `snaRequestId`. On `400` and `401` the SDK calls `onError` with an `IntelligenceError` whose `errorMessage` is `<errorCode>: <errorMessage> - <errorDescription>` and whose `requestId` is the Sign3 request id.
 
 #### Status code `200` — The transaction was opened
 
@@ -246,9 +246,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "snaRequestId": "ARID_A1B2C3D4E5F6"
-   }
+  "snaRequestId": "ARID_A1B2C3D4E5F6"
 }
 ```
 
@@ -271,11 +269,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "7119",
-      "errorDescription": "Request error: Invalid request Id"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7119: Invalid Request - Request error: Invalid request Id"
 }
 ```
 
@@ -284,11 +279,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "7106",
-      "errorDescription": "Request error: Invalid phoneNumber or email."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7106: Invalid Request - Request error: Invalid phoneNumber or email."
 }
 ```
 
@@ -297,11 +289,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "7102",
-      "errorDescription": "Request error: Invalid phone number"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7102: Invalid Request - Request error: Invalid phone number"
 }
 ```
 
@@ -310,11 +299,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "7104",
-      "errorDescription": "Request error: Invalid email"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7104: Invalid Request - Request error: Invalid email"
 }
 ```
 
@@ -323,11 +309,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "7113",
-      "errorDescription": "Request error: Invalid expiry"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7113: Invalid Request - Request error: Invalid expiry"
 }
 ```
 
@@ -343,11 +326,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Timeout Error",
-      "errorCode": "9001",
-      "errorDescription": "Sign3 SIM binding creation timed out."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "9001: Timeout Error - Sign3 SIM binding creation timed out."
 }
 ```
 
@@ -356,11 +336,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "9003",
-      "errorDescription": "Sign3 SIM binding requires a phone number containing the country code followed by the subscriber number."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "9003: Invalid Request - Sign3 SIM binding requires a phone number containing the country code followed by the subscriber number."
 }
 ```
 
@@ -369,11 +346,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Invalid Request",
-      "errorCode": "9004",
-      "errorDescription": "The SIM binding template ID is not configured for this tenant."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "9004: Invalid Request - The SIM binding template ID is not configured for this tenant."
 }
 ```
 
@@ -394,11 +368,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Access blocked",
-      "errorCode": "7012",
-      "errorDescription": "Authorization error: Merchant credentials are empty"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7012: Access blocked - Authorization error: Merchant credentials are empty"
 }
 ```
 
@@ -407,11 +378,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Access blocked",
-      "errorCode": "7002",
-      "errorDescription": "Authorization error: Invalid credentials"
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7002: Access blocked - Authorization error: Invalid credentials"
 }
 ```
 
@@ -420,11 +388,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Merchant Blocked",
-      "errorCode": "7019",
-      "errorDescription": "Your account has been temporarily Blocked. Please contact support for assistance."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "7019: Merchant Blocked - Your account has been temporarily Blocked. Please contact support for assistance."
 }
 ```
 
@@ -439,11 +404,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Access blocked",
-      "errorCode": "9002",
-      "errorDescription": "Sign3 SIM binding tenantId or tenantSecret is not configured for this tenant."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "9002: Access blocked - Sign3 SIM binding tenantId or tenantSecret is not configured for this tenant."
 }
 ```
 
@@ -452,11 +414,8 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 
 ```json
 {
-   "simBindingResult": {
-      "errorMessage": "Access blocked",
-      "errorCode": "9005",
-      "errorDescription": "Sign3 SIM binding is not enabled for this tenant."
-   }
+  "requestId": "6f1c2a7e-3b9d-4c58-a1e2-9d7b5f0c4e21",
+  "errorMessage": "9005: Access blocked - Sign3 SIM binding is not enabled for this tenant."
 }
 ```
 
@@ -504,45 +463,45 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "auths": [
-      {
-         "identityType": "MOBILE",
-         "identityValue": "917069914791",
-         "channel": "SILENT_AUTH",
-         "methods": [
-            "SILENT_AUTH"
-         ],
-         "status": "SUCCESS",
-         "verifiedTimestamp": 1781091069000,
-         "type": "PRIMARY"
-      }
-   ],
-   "derivedOperator": "AIRTEL",
-   "phoneDetail": {
-      "countryCode": "91",
-      "country": "IN",
-      "type": "MOBILE",
-      "homeOperator": "VI",
-      "location": "India",
-      "timeZones": [
-         "Asia/Calcutta"
-      ]
-   },
-   "simDetail": {
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "SUCCESS",
+      "verifiedTimestamp": 1781091069000,
+      "type": "PRIMARY"
+    }
+  ],
+  "derivedOperator": "AIRTEL",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
+  },
+  "simDetail": {
+    "operator": "AIRTEL",
+    "mcc": 405,
+    "mnc": 51
+  },
+  "networkDetail": {
+    "ip": "2401:4900:1c50:1a3b::1",
+    "ipType": "IPV6",
+    "operator": "AIRTEL",
+    "callback": {
+      "ip": "2401:4900:aabb:f09e::68fa:fe37",
       "operator": "AIRTEL",
-      "mcc": 405,
-      "mnc": 51
-   },
-   "networkDetail": {
-      "ip": "2401:4900:1c50:1a3b::1",
-      "ipType": "IPV6",
-      "operator": "AIRTEL",
-      "callback": {
-         "ip": "2401:4900:aabb:f09e::68fa:fe37",
-         "operator": "AIRTEL",
-         "userAgent": "Chrome/147.0.0.0 Mobile Safari/537.36"
-      }
-   }
+      "userAgent": "Chrome/147.0.0.0 Mobile Safari/537.36"
+    }
+  }
 }
 ```
 
@@ -551,39 +510,39 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "auths": [
-      {
-         "identityType": "MOBILE",
-         "identityValue": "917069914791",
-         "channel": "SILENT_AUTH",
-         "methods": [
-            "SILENT_AUTH"
-         ],
-         "status": "PENDING",
-         "type": "PRIMARY"
-      }
-   ],
-   "derivedOperator": "AIRTEL",
-   "phoneDetail": {
-      "countryCode": "91",
-      "country": "IN",
-      "type": "MOBILE",
-      "homeOperator": "VI",
-      "location": "India",
-      "timeZones": [
-         "Asia/Calcutta"
-      ]
-   },
-   "simDetail": {
-      "operator": "AIRTEL",
-      "mcc": 405,
-      "mnc": 51
-   },
-   "networkDetail": {
-      "ip": "2401:4900:1c50:1a3b::1",
-      "ipType": "IPV6",
-      "operator": "AIRTEL"
-   }
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "PENDING",
+      "type": "PRIMARY"
+    }
+  ],
+  "derivedOperator": "AIRTEL",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
+  },
+  "simDetail": {
+    "operator": "AIRTEL",
+    "mcc": 405,
+    "mnc": 51
+  },
+  "networkDetail": {
+    "ip": "2401:4900:1c50:1a3b::1",
+    "ipType": "IPV6",
+    "operator": "AIRTEL"
+  }
 }
 
 
@@ -598,43 +557,43 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "auths": [
-      {
-         "identityType": "MOBILE",
-         "identityValue": "917069914791",
-         "channel": "SILENT_AUTH",
-         "methods": [
-            "SILENT_AUTH"
-         ],
-         "status": "FAILED",
-         "type": "PRIMARY",
-         "error": {
-            "errorCode": "SP40005",
-            "message": "Operator not supported",
-            "description": "This operator isn’t supported. Please try a different network."
-         }
+  "auths": [
+    {
+      "identityType": "MOBILE",
+      "identityValue": "917069914791",
+      "channel": "SILENT_AUTH",
+      "methods": [
+        "SILENT_AUTH"
+      ],
+      "status": "FAILED",
+      "type": "PRIMARY",
+      "error": {
+        "errorCode": "SP40005",
+        "message": "Operator not supported",
+        "description": "This operator isn’t supported. Please try a different network."
       }
-   ],
-   "derivedOperator": "JIO",
-   "phoneDetail": {
-      "countryCode": "91",
-      "country": "IN",
-      "type": "MOBILE",
-      "homeOperator": "VI",
-      "location": "India",
-      "timeZones": [
-         "Asia/Calcutta"
-      ]
-   },
-   "simDetail": {
-      "operator": "JIO",
-      "mcc": 405,
-      "mnc": 872
-   },
-   "networkDetail": {
-      "ip": "49.204.148.177",
-      "ipType": "IPV4"
-   }
+    }
+  ],
+  "derivedOperator": "JIO",
+  "phoneDetail": {
+    "countryCode": "91",
+    "country": "IN",
+    "type": "MOBILE",
+    "homeOperator": "VI",
+    "location": "India",
+    "timeZones": [
+      "Asia/Calcutta"
+    ]
+  },
+  "simDetail": {
+    "operator": "JIO",
+    "mcc": 405,
+    "mnc": 872
+  },
+  "networkDetail": {
+    "ip": "49.204.148.177",
+    "ipType": "IPV4"
+  }
 }
 
 
@@ -656,9 +615,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "message": "Invalid Request",
-   "errorCode": "7170",
-   "description": "Auth not started yet. Please initiate authentication first."
+  "message": "Invalid Request",
+  "errorCode": "7170",
+  "description": "Auth not started yet. Please initiate authentication first."
 }
 ```
 
@@ -667,9 +626,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "message": "Invalid Request",
-   "errorCode": "7119",
-   "description": "Request error: Invalid request Id"
+  "message": "Invalid Request",
+  "errorCode": "7119",
+  "description": "Request error: Invalid request Id"
 }
 ```
 
@@ -690,9 +649,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "message": "Access blocked",
-   "errorCode": "7012",
-   "description": "Authorization error: Merchant credentials are empty"
+  "message": "Access blocked",
+  "errorCode": "7012",
+  "description": "Authorization error: Merchant credentials are empty"
 }
 ```
 
@@ -701,9 +660,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "message": "Access blocked",
-   "errorCode": "7002",
-   "description": "Authorization error: Invalid credentials"
+  "message": "Access blocked",
+  "errorCode": "7002",
+  "description": "Authorization error: Invalid credentials"
 }
 ```
 
@@ -712,9 +671,9 @@ curl --location 'https://intelligence.sign3.in/auth/v1/status?requestId=ARID_411
 
 ```json
 {
-   "message": "Merchant Blocked",
-   "errorCode": "7019",
-   "description": "Your account has been temporarily Blocked. Please contact support for assistance."
+  "message": "Merchant Blocked",
+  "errorCode": "7019",
+  "description": "Your account has been temporarily Blocked. Please contact support for assistance."
 }
 ```
 
@@ -755,5 +714,5 @@ flowchart TD
 ### 1.0.0
 - Silent Network Authentication over the carrier network, with automatic fallback to SMS OTP and automatic OTP verification.
 - Driven entirely by the Sign3 Intelligence SDK on `UserEventType.AUTH` scores; no API to call.
-- `IntelligenceResponse.simBindingResult.snaRequestId` carries the transaction id for the `/auth/v1/status` check; on failure `simBindingResult` carries `errorCode`, `errorMessage` and `errorDescription`.
+- `IntelligenceResponse.snaRequestId` carries the transaction id for the `/auth/v1/status` check; on failure `onError` receives an `IntelligenceError` whose `errorMessage` carries the error code, message and description.
 - Ships its network security config and consumer ProGuard rules.
