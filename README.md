@@ -166,7 +166,7 @@ Ask Sign3 to enable SIM binding for your tenant. Once SIM binding is enabled, yo
 4. On success, `onSuccess` receives an `IntelligenceResponse` whose `snaRequestId` holds the SNA request id. On failure, `onError` receives an `IntelligenceError` whose `errorMessage` carries the error code, message and description. Once you receive the `snaRequestId`, you need to poll the `Status Check API` to check the status of the SNA request. You can poll the Status Check API from your backend through the `Login API` until the SNA request reaches a final status. The recommended approach is to make a backend-to-backend call to perform the status check.
 
 
-NOTE: Options are reset after every score, so update them again before each AUTH score.
+NOTE: Options are reset after every getIntelligence call, so update them again before each AUTH score.
 
 ### For Kotlin
 
