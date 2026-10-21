@@ -693,7 +693,7 @@ flowchart TD
     C{"3. Did the response carry an snaRequestId?"}
     NO["No &nbsp;→&nbsp; onError gives you the error code and message. Show it or retry."]
     YES["Yes &nbsp;→&nbsp; SIM binding has started. Send the snaRequestId to your backend."]
-    D["4. // Your backend calls the Status Check API with that ID until the status is SUCCESS or FAILED, then notifies you whether SIM binding succeeded or failed."]
+    D["4. Your backend calls the Status Check API with that ID until the status is SUCCESS or FAILED, then notifies you whether SIM binding succeeded or failed."]
 
     A --> B --> C
     C -- No --> NO
