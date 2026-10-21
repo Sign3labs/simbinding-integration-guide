@@ -180,9 +180,9 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions)
 
 Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListener {
     override fun onSuccess(response: IntelligenceResponse) {
+        // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
         val snaRequestId = response.snaRequestId
         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId $snaRequestId")
-        // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
     }
 
     override fun onError(error: IntelligenceError) {
@@ -205,9 +205,9 @@ Sign3Intelligence.getInstance(this).updateOptions(updateOptions);
 Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
     @Override
     public void onSuccess(IntelligenceResponse response) {
+        // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
         String snaRequestId = response.getSnaRequestId();
         Log.i("Sign3SimBinding", "SIM binding started with snaRequestId " + snaRequestId);
-        // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
     }
 
     @Override
