@@ -182,7 +182,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(object : IntelligenceListene
     override fun onSuccess(response: IntelligenceResponse) {
         val snaRequestId = response.snaRequestId
         if (snaRequestId.isNullOrEmpty()) {
-            // SIM binding was not started for this request. Handle the Intelligence Response as required.
+            // SIM binding was not started for this request. If you set UserEventType.AUTH, you can check the ErrorResponse; otherwise, handle the IntelligenceResponse as required.
         } else {
             // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
             Log.i("Sign3SimBinding", "SIM binding started with snaRequestId $snaRequestId")
@@ -211,7 +211,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
     public void onSuccess(IntelligenceResponse response) {
         String snaRequestId = response.getSnaRequestId();
         if (snaRequestId == null || snaRequestId.isEmpty()) {
-            // SIM binding was not started for this request. Handle the Intelligence Response as required.
+            // SIM binding was not started for this request. If you set UserEventType.AUTH, you can check the ErrorResponse; otherwise, handle the IntelligenceResponse as required.
         } else {
             // ⭐ Recommended: Poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed.
             Log.i("Sign3SimBinding", "SIM binding started with snaRequestId " + snaRequestId);
@@ -227,8 +227,7 @@ Sign3Intelligence.getInstance(this).getIntelligence(new IntelligenceListener() {
 ```
 
 > [!IMPORTANT]
-> **Recommended:** Once you receive the `snaRequestId`, poll the Status Check API from your backend to check whether SIM binding is pending, successful, or failed. Keep polling until it reaches a success/failed status. Never call the Status Check API from the app side, since a status checked on the device can be tampered and the credentials would be exposed.
-
+> **Recommended:** Once you receive the snaRequestId, poll the Status Check API from your backend login/signup API to check whether SIM binding is PENDING, SUCCESS, or FAILED. Continue polling until the status reaches SUCCESS or FAILED. Never call the Status Check API from the app, as device-side checks can be tampered with and expose credentials.
 <br>
 
 ### SIM Binding Result
@@ -694,7 +693,7 @@ flowchart TD
     C{"3. Did the response carry an snaRequestId?"}
     NO["No &nbsp;→&nbsp; onError gives you the error code and message. Show it or retry."]
     YES["Yes &nbsp;→&nbsp; SIM binding has started. Send the snaRequestId to your backend."]
-    D["4. Your backend calls the Status Check API with that id until the status is SUCCESS or FAILED"]
+    D["4. // Your backend calls the Status Check API with that ID until the status is SUCCESS or FAILED, then notifies you whether SIM binding succeeded or failed."]
 
     A --> B --> C
     C -- No --> NO
